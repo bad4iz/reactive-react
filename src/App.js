@@ -1,23 +1,36 @@
-import logo from './logo.svg';
 import './App.css';
+import {useState} from "react";
+
+const useReactive = () =>{
+    const [value, setValue] = useState()
+    return new Proxy({}, {
+        get: (target, prop ) => {
+            return value
+        },
+        set: (target, prop, val) => {
+            if(val !== value) {
+                setValue(val);
+                return val;
+            }
+        }
+    })
+}
 
 function App() {
+  const reactive = useReactive();
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <p>
+      {reactive.value}
+      </p>
+      <input
+          type="text"
+          onChange={({target})=> {
+              reactive.value = target.value
+          }
+      }/>
+
+
     </div>
   );
 }
